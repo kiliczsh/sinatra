@@ -3,6 +3,13 @@
 [![Gem Version](https://badge.fury.io/rb/muren.svg)](https://badge.fury.io/rb/muren)
 [![Testing](https://github.com/kiliczsh/muren/actions/workflows/test.yml/badge.svg)](https://github.com/kiliczsh/muren/actions/workflows/test.yml)
 
+Müren is a fork of [Sinatra](https://github.com/sinatra/sinatra), named after
+[Zeki Müren](https://en.wikipedia.org/wiki/Zeki_M%C3%BCren) — a legendary Turkish
+artist, much like Frank Sinatra is to the West. Sinatra the gem has slowed down in
+active development, and this project exists to keep that tradition alive: applying
+timely fixes, staying current with the Ruby ecosystem, and adding features when
+there is a clear need. The philosophy remains the same — stay out of your way.
+
 Müren is a [DSL](https://en.wikipedia.org/wiki/Domain-specific_language) for
 quickly creating web applications in Ruby with minimal effort:
 
