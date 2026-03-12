@@ -35,10 +35,10 @@ RubyGems 2.0 or newer is required to protect against public gem pushes. You can 
   end
 
   s.metadata = {
-    'source_code_uri' => 'https://github.com/muren/muren',
-    'changelog_uri' => 'https://github.com/muren/muren/blob/main/CHANGELOG.md',
+    'source_code_uri' => 'https://github.com/kiliczsh/muren',
+    'changelog_uri' => 'https://github.com/kiliczsh/muren/blob/main/CHANGELOG.md',
     'homepage_uri' => 'http://murenrb.com/',
-    'bug_tracker_uri' => 'https://github.com/muren/muren/issues',
+    'bug_tracker_uri' => 'https://github.com/kiliczsh/muren/issues',
     'mailing_list_uri' => 'http://groups.google.com/group/murenrb',
     'documentation_uri' => 'https://www.rubydoc.info/gems/muren',
     'rubygems_mfa_required' => 'true'

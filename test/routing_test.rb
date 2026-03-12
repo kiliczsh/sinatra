@@ -256,7 +256,7 @@ class RoutingTest < Minitest::Test
     assert ok?
     assert_equal 'worked', body
   rescue Rack::Lint::LintError => error
-    # Temporary fix for https://github.com/muren/muren/issues/2113
+    # Temporary fix for https://github.com/kiliczsh/muren/issues/2113
     skip error.message
   end
 
@@ -277,7 +277,7 @@ class RoutingTest < Minitest::Test
     assert ok?
     assert_equal 'worked', body
   rescue Rack::Lint::LintError => error
-    # Temporary fix for https://github.com/muren/muren/issues/2113
+    # Temporary fix for https://github.com/kiliczsh/muren/issues/2113
     skip error.message
   end
 

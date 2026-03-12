@@ -1,7 +1,7 @@
 # Müren
 
 [![Gem Version](https://badge.fury.io/rb/muren.svg)](https://badge.fury.io/rb/muren)
-[![Testing](https://github.com/muren/muren/actions/workflows/test.yml/badge.svg)](https://github.com/muren/muren/actions/workflows/test.yml)
+[![Testing](https://github.com/kiliczsh/muren/actions/workflows/test.yml/badge.svg)](https://github.com/kiliczsh/muren/actions/workflows/test.yml)
 
 Müren is a [DSL](https://en.wikipedia.org/wiki/Domain-specific_language) for
 quickly creating web applications in Ruby with minimal effort:
@@ -1428,7 +1428,7 @@ If the optional parameter is set to `keep_open`, it will not call `close` on
 the stream object, allowing you to close it at any later point in the
 execution flow.
 
-You can have a look at the [chat example](https://github.com/muren/muren/blob/main/examples/chat.rb)
+You can have a look at the [chat example](https://github.com/kiliczsh/muren/blob/main/examples/chat.rb)
 
 It's also possible for the client to close the connection when trying to
 write to the socket. Because of this, it's recommended to check
@@ -1910,7 +1910,7 @@ end
 ### Configuring attack protection
 
 Müren is using
-[Rack::Protection](https://github.com/muren/muren/tree/main/rack-protection#readme) to
+[Rack::Protection](https://github.com/kiliczsh/muren/tree/main/rack-protection#readme) to
 defend your application against common, opportunistic attacks. You can
 easily disable this behavior (which will open up your application to tons
 of common vulnerabilities):
@@ -2097,7 +2097,7 @@ set :protection, :session => true
       <tt>environment</tt> is set to <tt>"test"</tt>, disabled otherwise.
     </dd>
     <dd>
-      Any explicitly defined error handlers always override this setting. See 
+      Any explicitly defined error handlers always override this setting. See
       the "Error" section below.
     </dd>
 
@@ -2336,8 +2336,8 @@ and additional debugging information in your browser.
 
 ### Behavior with `raise_errors` option
 
-When `raise_errors` option is `true`, errors that are unhandled are raised 
-outside of the application. Additionally, any errors that would have been 
+When `raise_errors` option is `true`, errors that are unhandled are raised
+outside of the application. Additionally, any errors that would have been
 caught by the catch-all error handler are raised.
 
 For example, consider the following configuration:
@@ -2358,25 +2358,25 @@ If `raise_errors` is `false`:
 
 * When `MyCustomError` or descendant is raised, the first handler is invoked.
   The HTTP response body will contain `"A custom message"`.
-* When any other error is raised, the second handler is invoked. The HTTP 
+* When any other error is raised, the second handler is invoked. The HTTP
   response body will contain `"A catch-all message"`.
 
 If `raise_errors` is `true`:
 
-* When `MyCustomError` or descendant is raised, the behavior is identical to 
+* When `MyCustomError` or descendant is raised, the behavior is identical to
   when `raise_errors` is `false`, described above.
-* When any other error is raised, the second handler is *not* invoked, and 
+* When any other error is raised, the second handler is *not* invoked, and
   the error is raised outside of the application.
-  * If the environment is `production`, the HTTP response body will contain 
+  * If the environment is `production`, the HTTP response body will contain
     a generic error message, e.g. `"An unhandled lowlevel error occurred. The
     application logs may have details."`
   * If the environment is not `production`, the HTTP response body will contain
     the verbose error backtrace.
-  * Regardless of environment, if `show_exceptions` is set to `:after_handler`, 
+  * Regardless of environment, if `show_exceptions` is set to `:after_handler`,
     the HTTP response body will contain the verbose error backtrace.
 
-In the `test` environment, `raise_errors` is set to `true` by default. This 
-means that in order to write a test for a catch-all error handler, 
+In the `test` environment, `raise_errors` is set to `true` by default. This
+means that in order to write a test for a catch-all error handler,
 `raise_errors` must temporarily be set to `false` for that particular test.
 
 ## Rack Middleware
@@ -2820,8 +2820,8 @@ You have the delegate scope binding inside:
 * An object extended with the `Müren::Delegator` mixin
 
 Have a look at the code for yourself: here's the
-[Müren::Delegator mixin](https://github.com/muren/muren/blob/ca06364/lib/muren/base.rb#L1609-1633)
-being [extending the main object](https://github.com/muren/muren/blob/ca06364/lib/muren/main.rb#L28-30).
+[Müren::Delegator mixin](https://github.com/kiliczsh/muren/blob/ca06364/lib/muren/base.rb#L1609-1633)
+being [extending the main object](https://github.com/kiliczsh/muren/blob/ca06364/lib/muren/main.rb#L28-30).
 
 ## Command Line
 
@@ -2911,7 +2911,7 @@ Then, in your project directory, create a `Gemfile`:
 
 ```ruby
 source 'https://rubygems.org'
-gem 'muren', :github => 'muren/muren'
+gem 'muren', :github => 'kiliczsh/muren'
 
 # other dependencies
 gem 'haml'                    # for instance, if you use haml
@@ -2938,15 +2938,15 @@ SemVerTag.
   news, and links to other resources.
 * [Contributing](https://murenrb.com/contributing) - Find a bug? Need
   help? Have a patch?
-* [Issue tracker](https://github.com/muren/muren/issues)
+* [Issue tracker](https://github.com/kiliczsh/muren/issues)
 * [Twitter](https://twitter.com/muren)
 * [Mailing List](https://groups.google.com/forum/#!forum/murenrb)
 * IRC: [#muren](irc://chat.freenode.net/#muren) on [Freenode](https://freenode.net)
 * [Müren & Friends](https://discord.gg/ncjsfsNHh7) on Discord
-* [Müren Book](https://github.com/muren/muren-book) - Cookbook Tutorial
+* [Müren Book](https://github.com/kiliczsh/muren-book) - Cookbook Tutorial
 * [Müren Recipes](http://recipes.murenrb.com/) - Community contributed
   recipes
 * API documentation for the [latest release](https://www.rubydoc.info/gems/muren)
-  or the [current HEAD](https://www.rubydoc.info/github/muren/muren) on
+  or the [current HEAD](https://www.rubydoc.info/github/kiliczsh/muren) on
   [RubyDoc](https://www.rubydoc.info/)
-* [CI Actions](https://github.com/muren/muren/actions)
+* [CI Actions](https://github.com/kiliczsh/muren/actions)

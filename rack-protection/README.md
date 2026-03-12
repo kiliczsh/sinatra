@@ -113,7 +113,7 @@ The instrumenter is passed a namespace (String) and environment (Hash). The name
 [escaped-params]: http://www.murenrb.com/protection/escaped_params
 [form-token]: http://www.murenrb.com/protection/form_token
 [frame-options]: http://www.murenrb.com/protection/frame_options
-[host-authorization]: https://github.com/muren/muren/blob/main/rack-protection/lib/rack/protection/host_authorization.rb
+[host-authorization]: https://github.com/kiliczsh/muren/blob/main/rack-protection/lib/rack/protection/host_authorization.rb
 [http-origin]: http://www.murenrb.com/protection/http_origin
 [ip-spoofing]: http://www.murenrb.com/protection/ip_spoofing
 [json-csrf]: http://www.murenrb.com/protection/json_csrf

@@ -11,7 +11,7 @@ Gem::Specification.new do |s|
   s.homepage    = 'http://murenrb.com/contrib/'
   s.license     = 'MIT'
   s.summary     = "#{s.description}."
-  s.authors     = ['https://github.com/muren/muren/graphs/contributors']
+  s.authors     = ['https://github.com/kiliczsh/muren/graphs/contributors']
   s.email       = 'murenrb@googlegroups.com'
   s.files       = Dir['lib/**/*.rb'] + [
     'LICENSE',
@@ -31,7 +31,7 @@ RubyGems 2.0 or newer is required to protect against public gem pushes. You can 
   end
 
   s.metadata = {
-    'source_code_uri' => 'https://github.com/muren/muren/tree/main/muren-contrib',
+    'source_code_uri' => 'https://github.com/kiliczsh/muren/tree/main/muren-contrib',
     'homepage_uri' => 'http://murenrb.com/contrib/',
     'documentation_uri' => 'https://www.rubydoc.info/gems/muren-contrib',
     'rubygems_mfa_required' => 'true'

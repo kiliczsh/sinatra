@@ -73,7 +73,7 @@ module Muren
   #
   # Due to the rendering process limitation using <tt><%= yield_content %></tt>
   # from within nested templates do not work above the <tt><%= yield %> statement.
-  # For more details https://github.com/muren/muren-contrib/issues/140#issuecomment-48831668
+  # For more details https://github.com/kiliczsh/muren-contrib/issues/140#issuecomment-48831668
   #
   #     # app.rb
   #     get '/' do

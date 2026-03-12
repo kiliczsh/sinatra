@@ -58,7 +58,7 @@ RSpec.describe Muren::JSON do
   it "accepts shorthands for :content_type" do
     mock_app { get('/') { json({}, :content_type => :js) } }
     # Changed to "text/javascript" in Rack >3.0
-    # https://github.com/muren/muren/pull/1857#issuecomment-1445062212
+    # https://github.com/kiliczsh/muren/pull/1857#issuecomment-1445062212
     expect(get('/')["Content-Type"])
       .to eq("application/javascript;charset=utf-8").or eq("text/javascript;charset=utf-8")
   end

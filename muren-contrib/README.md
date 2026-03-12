@@ -83,7 +83,7 @@ If you don't use Bundler, install the gem manually by executing `gem install mur
 If you want to use the gem from git, for whatever reason, you can do the following:
 
 ```ruby
-github 'muren/muren' do
+github 'kiliczsh/muren' do
   gem 'muren-contrib'
 end
 ```
@@ -167,7 +167,7 @@ For more info check the [official docs](http://www.murenrb.com/contrib/) and
 [muren-webdav]: http://www.murenrb.com/contrib/webdav
 [muren-runner]: http://www.murenrb.com/contrib/runner
 [muren-extension]: http://www.murenrb.com/contrib/extension
-[muren-test-helpers]: https://github.com/muren/muren/blob/main/muren-contrib/lib/muren/test_helpers.rb
+[muren-test-helpers]: https://github.com/kiliczsh/muren/blob/main/muren-contrib/lib/muren/test_helpers.rb
 [muren-required-params]: http://www.murenrb.com/contrib/required_params
 [muren-custom-logger]: http://www.murenrb.com/contrib/custom_logger
 [muren-multi-route]: http://www.murenrb.com/contrib/multi_route
@@ -176,5 +176,4 @@ For more info check the [official docs](http://www.murenrb.com/contrib/) and
 [muren-config-file]: http://www.murenrb.com/contrib/config_file
 [muren-link-header]: http://www.murenrb.com/contrib/link_header
 [muren-capture]: http://www.murenrb.com/contrib/capture
-[muren-engine-tracking]: https://github.com/muren/muren/blob/main/muren-contrib/lib/muren/engine_tracking.rb
-
+[muren-engine-tracking]: https://github.com/kiliczsh/muren/blob/main/muren-contrib/lib/muren/engine_tracking.rb

@@ -3,7 +3,7 @@ name: Testing
 on:
   push:
     branches:
-      - '**'
+      - "**"
   pull_request:
 
 permissions:
@@ -39,31 +39,31 @@ jobs:
     env:
       rack: ${{ matrix.rack }}
     steps:
-    - uses: actions/checkout@v5
-    - uses: ruby/setup-ruby@v1
-      continue-on-error: ${{ matrix.allow-failure || false }}
-      id: setup-ruby
-      with:
-        bundler-cache: true
-        ruby-version: ${{ matrix.ruby }}
+      - uses: actions/checkout@v5
+      - uses: ruby/setup-ruby@v1
+        continue-on-error: ${{ matrix.allow-failure || false }}
+        id: setup-ruby
+        with:
+          bundler-cache: true
+          ruby-version: ${{ matrix.ruby }}
+          working-directory: rack-protection
+      - name: Run rack-protection tests
+        continue-on-error: ${{ matrix.allow-failure || false }}
+        id: protection-tests
         working-directory: rack-protection
-    - name: Run rack-protection tests
-      continue-on-error: ${{ matrix.allow-failure || false }}
-      id: protection-tests
-      working-directory: rack-protection
-      run: |
-        bundle exec rake
-    # because continue-on-error marks the steps as pass even if they fail
-    - name: "setup-ruby (bundle install) outcome: ${{ steps.setup-ruby.outcome }}"
-      run: ""
-    - name: "rack-protection tests outcome: ${{ steps.protection-tests.outcome }}"
-      run: ""
-    - uses: zzak/action-discord@v6
-      if: failure() && github.ref_name == 'main'
-      continue-on-error: true # always allow failure
-      with:
-        github-token: ${{ secrets.GITHUB_TOKEN }}
-        webhook: ${{ secrets.DISCORD_WEBHOOK }}
+        run: |
+          bundle exec rake
+      # because continue-on-error marks the steps as pass even if they fail
+      - name: "setup-ruby (bundle install) outcome: ${{ steps.setup-ruby.outcome }}"
+        run: ""
+      - name: "rack-protection tests outcome: ${{ steps.protection-tests.outcome }}"
+        run: ""
+      - uses: zzak/action-discord@v6
+        if: failure() && github.ref_name == 'main'
+        continue-on-error: true # always allow failure
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          webhook: ${{ secrets.DISCORD_WEBHOOK }}
   muren:
     name: |
       ${{ matrix.ruby }}
@@ -95,28 +95,139 @@ jobs:
         rubyopt:
           - "--enable-frozen-string-literal --debug-frozen-string-literal"
         include:
-          # Avoid Bundler 4 for now: https://github.com/muren/muren/issues/2135
-          - { ruby: "4.0", bundler: 2.7.2, rack: stable, puma: stable, tilt: stable, rack_session: stable, zeitwerk: stable }
+          # Avoid Bundler 4 for now: https://github.com/kiliczsh/muren/issues/2135
+          - {
+              ruby: "4.0",
+              bundler: 2.7.2,
+              rack: stable,
+              puma: stable,
+              tilt: stable,
+              rack_session: stable,
+              zeitwerk: stable,
+            }
           # Rack
-          - { ruby: 3.4, bundler: default, rack: "~>3.0.0", puma: stable, tilt: stable, rack_session: stable, zeitwerk: stable }
-          - { ruby: 3.4, bundler: default, rack: "~>3.1.0", puma: stable, tilt: stable, rack_session: stable, zeitwerk: stable }
-          - { ruby: 3.4, bundler: default, rack: head, puma: stable, tilt: stable, rack_session: stable, zeitwerk: stable }
+          - {
+              ruby: 3.4,
+              bundler: default,
+              rack: "~>3.0.0",
+              puma: stable,
+              tilt: stable,
+              rack_session: stable,
+              zeitwerk: stable,
+            }
+          - {
+              ruby: 3.4,
+              bundler: default,
+              rack: "~>3.1.0",
+              puma: stable,
+              tilt: stable,
+              rack_session: stable,
+              zeitwerk: stable,
+            }
+          - {
+              ruby: 3.4,
+              bundler: default,
+              rack: head,
+              puma: stable,
+              tilt: stable,
+              rack_session: stable,
+              zeitwerk: stable,
+            }
           # Rack::Session
-          - { ruby: 3.4, bundler: default, rack: stable, puma: stable, tilt: stable, rack_session: head, zeitwerk: stable }
+          - {
+              ruby: 3.4,
+              bundler: default,
+              rack: stable,
+              puma: stable,
+              tilt: stable,
+              rack_session: head,
+              zeitwerk: stable,
+            }
           # Puma
-          - { ruby: 3.4, bundler: default, rack: stable, puma: head, tilt: stable, rack_session: stable, zeitwerk: stable }
+          - {
+              ruby: 3.4,
+              bundler: default,
+              rack: stable,
+              puma: head,
+              tilt: stable,
+              rack_session: stable,
+              zeitwerk: stable,
+            }
           # Tilt
-          - { ruby: 3.4, bundler: default, rack: stable, puma: stable, tilt: head, rack_session: stable, zeitwerk: stable }
+          - {
+              ruby: 3.4,
+              bundler: default,
+              rack: stable,
+              puma: stable,
+              tilt: head,
+              rack_session: stable,
+              zeitwerk: stable,
+            }
           # Test Zeitwerk < 2.7.0 separately
-          - { ruby: 3.4, bundler: default, rack: stable, puma: stable, tilt: head, rack_session: stable, zeitwerk: '<2.7.0' }
+          - {
+              ruby: 3.4,
+              bundler: default,
+              rack: stable,
+              puma: stable,
+              tilt: head,
+              rack_session: stable,
+              zeitwerk: "<2.7.0",
+            }
           # JRuby, tests are notable flaky
-          - { ruby: jruby,            bundler: default, rubyopt: "", rack: stable, puma: stable, tilt: stable, rack_session: stable, zeitwerk: stable, allow-failure: true }
+          - {
+              ruby: jruby,
+              bundler: default,
+              rubyopt: "",
+              rack: stable,
+              puma: stable,
+              tilt: stable,
+              rack_session: stable,
+              zeitwerk: stable,
+              allow-failure: true,
+            }
           # Never fail our build due to problems with head rubies
-          - { ruby: ruby-head,        bundler: 2.7.2,   rack: stable, puma: stable, tilt: stable, rack_session: stable, zeitwerk: stable, allow-failure: true }
-          - { ruby: jruby-head,       bundler: default, rubyopt: "", rack: stable, puma: stable, tilt: stable, rack_session: stable, zeitwerk: stable, allow-failure: true }
-          - { ruby: truffleruby-head, bundler: default, rack: stable, puma: stable, tilt: stable, rack_session: stable, zeitwerk: stable, allow-failure: true }
+          - {
+              ruby: ruby-head,
+              bundler: 2.7.2,
+              rack: stable,
+              puma: stable,
+              tilt: stable,
+              rack_session: stable,
+              zeitwerk: stable,
+              allow-failure: true,
+            }
+          - {
+              ruby: jruby-head,
+              bundler: default,
+              rubyopt: "",
+              rack: stable,
+              puma: stable,
+              tilt: stable,
+              rack_session: stable,
+              zeitwerk: stable,
+              allow-failure: true,
+            }
+          - {
+              ruby: truffleruby-head,
+              bundler: default,
+              rack: stable,
+              puma: stable,
+              tilt: stable,
+              rack_session: stable,
+              zeitwerk: stable,
+              allow-failure: true,
+            }
           # truffleruby 24.1 fails, see https://github.com/oracle/truffleruby/issues/3788
-          - { ruby: truffleruby,      bundler: default, rack: stable, puma: stable, tilt: stable, rack_session: stable, zeitwerk: stable, allow-failure: true }
+          - {
+              ruby: truffleruby,
+              bundler: default,
+              rack: stable,
+              puma: stable,
+              tilt: stable,
+              rack_session: stable,
+              zeitwerk: stable,
+              allow-failure: true,
+            }
 
     env:
       rack: ${{ matrix.rack }}
@@ -128,63 +239,63 @@ jobs:
       # need to unset RUBYOPT for JRuby: https://github.com/jruby/ruby-maven/issues/12
 
     steps:
-    - name: Install dependencies
-      run: |
-        sudo apt-get update
-        sudo apt-get install --yes \
-          pandoc \
-          nodejs \
-          pkg-config \
-          libxml2-dev \
-          libxslt-dev \
-          libyaml-dev
+      - name: Install dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install --yes \
+            pandoc \
+            nodejs \
+            pkg-config \
+            libxml2-dev \
+            libxslt-dev \
+            libyaml-dev
 
-    - uses: actions/checkout@v5
+      - uses: actions/checkout@v5
 
-    - uses: ruby/setup-ruby@v1
-      continue-on-error: ${{ matrix.allow-failure || false }}
-      id: setup-ruby
-      with:
-        ruby-version: ${{ matrix.ruby }}
-        bundler: ${{ matrix.bundler }}
-        bundler-cache: true
-        # Update rubygems due to https://github.com/rubygems/rubygems/pull/6490 (3.0)
-        # and https://github.com/muren/muren/issues/2051 (3.1)
-        rubygems: ${{ matrix.ruby == '3.0' && 'latest' || matrix.ruby == '3.1' && 'latest' || 'default' }}
+      - uses: ruby/setup-ruby@v1
+        continue-on-error: ${{ matrix.allow-failure || false }}
+        id: setup-ruby
+        with:
+          ruby-version: ${{ matrix.ruby }}
+          bundler: ${{ matrix.bundler }}
+          bundler-cache: true
+          # Update rubygems due to https://github.com/rubygems/rubygems/pull/6490 (3.0)
+          # and https://github.com/kiliczsh/muren/issues/2051 (3.1)
+          rubygems: ${{ matrix.ruby == '3.0' && 'latest' || matrix.ruby == '3.1' && 'latest' || 'default' }}
 
-    # workaround for https://github.com/ruby/setup-ruby/issues/845
-    - name: Ensure Gemfile.lock is created with Bundler 2 for Ruby 4
-      if: matrix.ruby == '4.0' || matrix.ruby == 'ruby-head'
-      run: |
-        rm Gemfile.lock
-        bundle install
-      env:
-        BUNDLER_VERSION: ${{ matrix.bundler }}
+      # workaround for https://github.com/ruby/setup-ruby/issues/845
+      - name: Ensure Gemfile.lock is created with Bundler 2 for Ruby 4
+        if: matrix.ruby == '4.0' || matrix.ruby == 'ruby-head'
+        run: |
+          rm Gemfile.lock
+          bundle install
+        env:
+          BUNDLER_VERSION: ${{ matrix.bundler }}
 
-    - name: Run muren tests
-      continue-on-error: ${{ matrix.allow-failure || false }}
-      id: tests
-      run: bundle exec rake
+      - name: Run muren tests
+        continue-on-error: ${{ matrix.allow-failure || false }}
+        id: tests
+        run: bundle exec rake
 
-    - name: Run muren-contrib tests
-      continue-on-error: ${{ matrix.allow-failure || false }}
-      id: contrib-tests
-      working-directory: muren-contrib
-      run: |
-        bundle install --jobs=3 --retry=3
-        bundle exec rake
+      - name: Run muren-contrib tests
+        continue-on-error: ${{ matrix.allow-failure || false }}
+        id: contrib-tests
+        working-directory: muren-contrib
+        run: |
+          bundle install --jobs=3 --retry=3
+          bundle exec rake
 
-    # because continue-on-error marks the steps as pass even if they fail
-    - name: "setup-ruby (bundle install) outcome: ${{ steps.setup-ruby.outcome }}"
-      run: ""
-    - name: "muren tests outcome: ${{ steps.tests.outcome }}"
-      run: ""
-    - name: "muren-contrib tests outcome: ${{ steps.contrib-tests.outcome }}"
-      run: ""
+      # because continue-on-error marks the steps as pass even if they fail
+      - name: "setup-ruby (bundle install) outcome: ${{ steps.setup-ruby.outcome }}"
+        run: ""
+      - name: "muren tests outcome: ${{ steps.tests.outcome }}"
+        run: ""
+      - name: "muren-contrib tests outcome: ${{ steps.contrib-tests.outcome }}"
+        run: ""
 
-    - uses: zzak/action-discord@v6
-      if: failure() && github.ref_name == 'main'
-      continue-on-error: true # always allow failure
-      with:
-        github-token: ${{ secrets.GITHUB_TOKEN }}
-        webhook: ${{ secrets.DISCORD_WEBHOOK }}
+      - uses: zzak/action-discord@v6
+        if: failure() && github.ref_name == 'main'
+        continue-on-error: true # always allow failure
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          webhook: ${{ secrets.DISCORD_WEBHOOK }}

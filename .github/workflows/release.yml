@@ -8,7 +8,7 @@ on:
 
 jobs:
   release:
-    if: github.repository == 'muren/muren'
+    if: github.repository == 'kiliczsh/muren'
     runs-on: ubuntu-latest
     permissions:
       id-token: write # for trusted publishing

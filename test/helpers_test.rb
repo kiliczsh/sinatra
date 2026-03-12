@@ -686,7 +686,7 @@ class HelpersTest < Minitest::Test
           assert_equal content_type(:png),    'image/png'
           assert_equal content_type(:baz),    'application/baz;charset=utf-8'
           # Changed to "text/javascript" in Rack >3.0
-          # https://github.com/muren/muren/pull/1857#issuecomment-1445062212
+          # https://github.com/kiliczsh/muren/pull/1857#issuecomment-1445062212
           assert_match %r{^application|text/javascript;charset=utf-8$}, content_type(:js)
           tests_ran = true
           "done"
@@ -1991,7 +1991,7 @@ class HelpersTest < Minitest::Test
     it 'prepends modules so previously-defined methods can be overridden consistently' do
       skip <<-EOS
         This test will be helpful after switching #helpers's code from Module#include to Module#prepend
-        See more details: https://github.com/muren/muren/pull/1214
+        See more details: https://github.com/kiliczsh/muren/pull/1214
       EOS
       mock_app do
         helpers do
