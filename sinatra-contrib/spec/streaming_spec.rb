@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'spec_helper'
 
 RSpec.describe Sinatra::Streaming do
@@ -29,14 +31,14 @@ RSpec.describe Sinatra::Streaming do
     end
 
     it 'returns the stream object' do
-      out = stream { }
+      out = stream {}
       expect(out).to be_a(Sinatra::Helpers::Stream)
     end
 
     it 'fires a request against that stream' do
-      stream { |out| out << "Hello World!" }
+      stream { |out| out << 'Hello World!' }
       expect(last_response).to be_ok
-      expect(body).to eq("Hello World!")
+      expect(body).to eq('Hello World!')
     end
 
     it 'passes the stream object to the block' do
@@ -48,13 +50,13 @@ RSpec.describe Sinatra::Streaming do
 
   context Sinatra::Streaming::Stream do
     it 'should extend the stream object' do
-      out = stream { }
+      out = stream {}
       expect(out).to be_a(Sinatra::Streaming::Stream)
     end
 
     it 'should not extend stream objects of other apps' do
       out = nil
-      mock_app { get('/') { out = stream { }}}
+      mock_app { get('/') { out = stream {} } }
       get('/')
       expect(out).to be_a(Sinatra::Helpers::Stream)
       expect(out).not_to be_a(Sinatra::Streaming::Stream)
@@ -63,14 +65,14 @@ RSpec.describe Sinatra::Streaming do
 
   context 'app' do
     it 'is the app instance the stream was created from' do
-      out = stream { }
+      out = stream {}
       expect(out.app).to be_a(Sinatra::Base)
     end
   end
 
   context 'lineno' do
     it 'defaults to 0' do
-      expect(stream { }.lineno).to eq(0)
+      expect(stream {}.lineno).to eq(0)
     end
 
     it 'does not increase on write' do
@@ -81,7 +83,7 @@ RSpec.describe Sinatra::Streaming do
     end
 
     it 'is writable' do
-      out = stream { }
+      out = stream {}
       out.lineno = 10
       expect(out.lineno).to eq(10)
     end
@@ -89,7 +91,7 @@ RSpec.describe Sinatra::Streaming do
 
   context 'pos' do
     it 'defaults to 0' do
-      expect(stream { }.pos).to eq(0)
+      expect(stream {}.pos).to eq(0)
     end
 
     it 'increases when writing data' do
@@ -101,13 +103,13 @@ RSpec.describe Sinatra::Streaming do
     end
 
     it 'is writable' do
-      out = stream { }
+      out = stream {}
       out.pos = 10
       expect(out.pos).to eq(10)
     end
 
     it 'aliased to #tell' do
-      out = stream { }
+      out = stream {}
       expect(out.tell).to eq(0)
       out.pos = 10
       expect(out.tell).to eq(10)
@@ -130,7 +132,7 @@ RSpec.describe Sinatra::Streaming do
         out.map! { |s| s.upcase }
         out << 'ok'
       end
-      expect(body).to eq("OK")
+      expect(body).to eq('OK')
     end
 
     it 'is chainable' do
@@ -139,12 +141,13 @@ RSpec.describe Sinatra::Streaming do
         out.map! { |s| s.reverse }
         out << 'ok'
       end
-      expect(body).to eq("KO")
+      expect(body).to eq('KO')
     end
 
     it 'works with middleware' do
       middleware = Class.new do
         def initialize(app) @app = app end
+
         def call(env)
           status, headers, body = @app.call(env)
           body.map! { |s| s.upcase }
@@ -153,16 +156,16 @@ RSpec.describe Sinatra::Streaming do
       end
 
       use middleware
-      stream { |out| out << "ok" }
-      expect(body).to eq("OK")
+      stream { |out| out << 'ok' }
+      expect(body).to eq('OK')
     end
 
     it 'modifies each value separately' do
       stream do |out|
         out.map! { |s| s.reverse }
-        out << "ab" << "cd"
+        out << 'ab' << 'cd'
       end
-      expect(body).to eq("badc")
+      expect(body).to eq('badc')
     end
   end
 
@@ -170,6 +173,7 @@ RSpec.describe Sinatra::Streaming do
     it 'works with middleware' do
       middleware = Class.new do
         def initialize(app) @app = app end
+
         def call(env)
           status, headers, body = @app.call(env)
           [status, headers, body.map(&:upcase)]
@@ -177,13 +181,14 @@ RSpec.describe Sinatra::Streaming do
       end
 
       use middleware
-      stream { |out| out << "ok" }
-      expect(body).to eq("OK")
+      stream { |out| out << 'ok' }
+      expect(body).to eq('OK')
     end
 
     it 'is chainable' do
       middleware = Class.new do
         def initialize(app) @app = app end
+
         def call(env)
           status, headers, body = @app.call(env)
           [status, headers, body.map(&:upcase).map(&:reverse)]
@@ -191,13 +196,14 @@ RSpec.describe Sinatra::Streaming do
       end
 
       use middleware
-      stream { |out| out << "ok" }
-      expect(body).to eq("KO")
+      stream { |out| out << 'ok' }
+      expect(body).to eq('KO')
     end
 
     it 'can be written as each.map' do
       middleware = Class.new do
         def initialize(app) @app = app end
+
         def call(env)
           status, headers, body = @app.call(env)
           [status, headers, body.each.map(&:upcase)]
@@ -205,8 +211,8 @@ RSpec.describe Sinatra::Streaming do
       end
 
       use middleware
-      stream { |out| out << "ok" }
-      expect(body).to eq("OK")
+      stream { |out| out << 'ok' }
+      expect(body).to eq('OK')
     end
 
     it 'does not modify the original body' do
@@ -271,7 +277,7 @@ RSpec.describe Sinatra::Streaming do
     end
 
     it 'interpolates the format string' do
-      stream { |out| out.printf("%s: %d", "answer", 42) }
+      stream { |out| out.printf('%s: %d', 'answer', 42) }
       expect(body).to eq('answer: 42')
     end
 
@@ -347,13 +353,13 @@ RSpec.describe Sinatra::Streaming do
 
   context 'close_read' do
     it 'raises the appropriate exception' do
-      expect { stream { |out| out.close_read }}.
-        to raise_error(IOError, "closing non-duplex IO for reading")
+      expect { stream { |out| out.close_read } }
+        .to raise_error(IOError, 'closing non-duplex IO for reading')
     end
   end
 
   context 'closed_read?' do
-    it('returns true') { stream { |out| expect(out).to be_closed_read }}
+    it('returns true') { stream { |out| expect(out).to be_closed_read } }
   end
 
   context 'rewind' do
@@ -385,8 +391,8 @@ RSpec.describe Sinatra::Streaming do
   raises.each do |method|
     context method do
       it 'raises the appropriate exception' do
-        expect { stream { |out| out.public_send(method) }}.
-          to raise_error(IOError, "not opened for reading")
+        expect { stream { |out| out.public_send(method) } }
+          .to raise_error(IOError, 'not opened for reading')
       end
     end
   end
@@ -398,8 +404,8 @@ RSpec.describe Sinatra::Streaming do
       end
 
       it 'calling each raises the appropriate exception' do
-        expect { stream { |out| out.public_send(method).each { }}}.
-          to raise_error(IOError, "not opened for reading")
+        expect { stream { |out| out.public_send(method).each {} } }
+          .to raise_error(IOError, 'not opened for reading')
       end
     end
   end
@@ -409,6 +415,44 @@ RSpec.describe Sinatra::Streaming do
       it 'returns nil' do
         stream { |out| expect(out.public_send(method)).to be_nil }
       end
+    end
+  end
+
+  context 'seek' do
+    it 'returns 0' do
+      stream { |out| expect(out.seek(10)).to eq(0) }
+    end
+  end
+
+  context 'sync' do
+    it 'returns true' do
+      stream { |out| expect(out.sync).to be true }
+    end
+  end
+
+  context 'tty?' do
+    it 'returns false' do
+      stream { |out| expect(out.tty?).to be false }
+    end
+  end
+
+  context 'settings' do
+    it 'returns the app settings' do
+      out = stream {}
+      expect(out.settings).to respond_to(:environment)
+    end
+  end
+
+  context 'external_encoding' do
+    it 'returns an Encoding when default_encoding is valid' do
+      out = stream {}
+      expect(out.external_encoding).to be_a(Encoding)
+    end
+
+    it 'returns the raw setting value when Encoding.find raises NameError' do
+      out = stream {}
+      allow(Encoding).to receive(:find).and_raise(NameError)
+      expect(out.external_encoding).to eq(out.settings.default_encoding)
     end
   end
 end

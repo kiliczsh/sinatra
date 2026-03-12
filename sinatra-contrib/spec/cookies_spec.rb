@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'spec_helper'
 
 RSpec.describe Sinatra::Cookies do
@@ -6,11 +8,11 @@ RSpec.describe Sinatra::Cookies do
     set_cookie(cookies)
     @cookie_app.get('/') do
       result = instance_eval(&block)
-      "ok"
+      'ok'
     end
     get '/', {}, headers || {}
     expect(last_response).to be_ok
-    expect(body).to eq("ok")
+    expect(body).to eq('ok')
     result
   end
 
@@ -53,15 +55,15 @@ RSpec.describe Sinatra::Cookies do
 
   describe :[] do
     it 'allows access to request cookies' do
-      expect(cookies("foo=bar")["foo"]).to eq("bar")
+      expect(cookies('foo=bar')['foo']).to eq('bar')
     end
 
     it 'takes symbols as keys' do
-      expect(cookies("foo=bar")[:foo]).to eq("bar")
+      expect(cookies('foo=bar')[:foo]).to eq('bar')
     end
 
     it 'returns nil for missing keys' do
-      expect(cookies("foo=bar")['bar']).to be_nil
+      expect(cookies('foo=bar')['bar']).to be_nil
     end
 
     it 'allows access to response cookies' do
@@ -77,7 +79,6 @@ RSpec.describe Sinatra::Cookies do
         cookies['foo']
       end).to eq('baz')
     end
-
 
     it 'takes the last value for response cookies' do
       expect(cookie_route do
@@ -97,11 +98,11 @@ RSpec.describe Sinatra::Cookies do
     end
 
     it 'sets domain to nil if localhost' do
-      headers = {'HTTP_HOST' => 'localhost'}
+      headers = { 'HTTP_HOST' => 'localhost' }
       expect(cookie_route(headers: headers) do
         cookies['foo'] = 'bar'
         response['Set-Cookie']
-      end).not_to include("domain")
+      end).not_to include('domain')
     end
 
     it 'sets the domain' do
@@ -139,11 +140,13 @@ RSpec.describe Sinatra::Cookies do
     end
   end
 
-  describe :assoc do
-    it 'behaves like Hash#assoc' do
-      cookies('foo=bar').assoc('foo') == ['foo', 'bar']
+  if Hash.method_defined? :assoc
+    describe :assoc do
+      it 'behaves like Hash#assoc' do
+        cookies('foo=bar').assoc('foo') == %w[foo bar]
+      end
     end
-  end if Hash.method_defined? :assoc
+  end
 
   describe :clear do
     it 'removes request cookies from cookies hash' do
@@ -162,10 +165,10 @@ RSpec.describe Sinatra::Cookies do
     end
 
     it 'expires existing cookies' do
-      expect(cookie_route("foo=bar") do
+      expect(cookie_route('foo=bar') do
         cookies.clear
         response['Set-Cookie']
-      end).to include("foo=;", "expires=", "1970 00:00:00")
+      end).to include('foo=;', 'expires=', '1970 00:00:00')
     end
   end
 
@@ -198,50 +201,50 @@ RSpec.describe Sinatra::Cookies do
     end
 
     it 'expires existing cookies' do
-      expect(cookie_route("foo=bar") do
+      expect(cookie_route('foo=bar') do
         cookies.delete 'foo'
         response['Set-Cookie']
-      end).to include("foo=;", "expires=", "1970 00:00:00")
+      end).to include('foo=;', 'expires=', '1970 00:00:00')
     end
 
     it 'honours the app cookie_options' do
       @cookie_app.class_eval do
         set :cookie_options, {
-          :path => '/foo',
-          :domain => 'bar.com',
-          :secure => true,
-          :httponly => true
+          path: '/foo',
+          domain: 'bar.com',
+          secure: true,
+          httponly: true
         }
       end
-      cookie_header = cookie_route("foo=bar") do
+      cookie_header = cookie_route('foo=bar') do
         cookies.delete 'foo'
         response['Set-Cookie']
       end
-      expect(cookie_header).to include("path=/foo;", "domain=bar.com;", "secure;", "httponly")
+      expect(cookie_header).to include('path=/foo;', 'domain=bar.com;', 'secure;', 'httponly')
     end
 
     it 'does not touch other cookies' do
-      expect(cookie_route("foo=bar", "bar=baz") do
+      expect(cookie_route('foo=bar', 'bar=baz') do
         cookies.delete 'foo'
         cookies['bar']
       end).to eq('baz')
     end
 
     it 'returns the previous value for request cookies' do
-      expect(cookie_route("foo=bar") do
-        cookies.delete "foo"
-      end).to eq("bar")
+      expect(cookie_route('foo=bar') do
+        cookies.delete 'foo'
+      end).to eq('bar')
     end
 
     it 'returns the previous value for response cookies' do
       expect(cookie_route do
         cookies['foo'] = 'bar'
-        cookies.delete "foo"
-      end).to eq("bar")
+        cookies.delete 'foo'
+      end).to eq('bar')
     end
 
     it 'returns nil for non-existing cookies' do
-      expect(cookie_route { cookies.delete("foo") }).to be_nil
+      expect(cookie_route { cookies.delete('foo') }).to be_nil
     end
   end
 
@@ -252,10 +255,10 @@ RSpec.describe Sinatra::Cookies do
         cookies['baz'] = 'foo'
         cookies.delete_if { |*a| a.include? 'bar' }
         response['Set-Cookie']
-      end).to eq(["bar=baz; domain=example.org; path=/; httponly",
-                  "baz=foo; domain=example.org; path=/; httponly",
-                  "foo=; domain=example.org; path=/; max-age=0; expires=Thu, 01 Jan 1970 00:00:00 GMT; httponly",
-                  "bar=; domain=example.org; path=/; max-age=0; expires=Thu, 01 Jan 1970 00:00:00 GMT; httponly"])
+      end).to eq(['bar=baz; domain=example.org; path=/; httponly',
+                  'baz=foo; domain=example.org; path=/; httponly',
+                  'foo=; domain=example.org; path=/; max-age=0; expires=Thu, 01 Jan 1970 00:00:00 GMT; httponly',
+                  'bar=; domain=example.org; path=/; max-age=0; expires=Thu, 01 Jan 1970 00:00:00 GMT; httponly'])
     end
   end
 
@@ -273,7 +276,7 @@ RSpec.describe Sinatra::Cookies do
         end
       end
 
-      expect(keys.sort).to eq(['bar', 'foo'])
+      expect(keys.sort).to eq(%w[bar foo])
       expect(foo).to eq('bar')
       expect(bar).to eq('baz')
     end
@@ -284,7 +287,7 @@ RSpec.describe Sinatra::Cookies do
       value = nil
       cookie_route('foo=bar') do
         cookies[:foo] = 'baz'
-        cookies.each do |k,v|
+        cookies.each do |k, v|
           key = k
           value = v
         end
@@ -297,7 +300,7 @@ RSpec.describe Sinatra::Cookies do
     it 'does not loop through deleted cookies' do
       cookie_route('foo=bar') do
         cookies.delete :foo
-        cookies.each { fail }
+        cookies.each { raise }
       end
     end
 
@@ -305,9 +308,9 @@ RSpec.describe Sinatra::Cookies do
       keys = []
       cookie_route('foo=bar') do
         enum = cookies.each
-        enum.each { |key, value| keys << key }
+        enum.each_key { |key| keys << key }
       end
-      keys.each{ |key| expect(key).to eq('foo')}
+      keys.each { |key| expect(key).to eq('foo') }
     end
   end
 
@@ -321,7 +324,7 @@ RSpec.describe Sinatra::Cookies do
         end
       end
 
-      expect(keys.sort).to eq(['bar', 'foo'])
+      expect(keys.sort).to eq(%w[bar foo])
     end
 
     it 'only yields keys once' do
@@ -335,7 +338,7 @@ RSpec.describe Sinatra::Cookies do
     it 'does not loop through deleted cookies' do
       cookie_route('foo=bar') do
         cookies.delete :foo
-        cookies.each_key { fail }
+        cookies.each_key { raise }
       end
     end
 
@@ -343,9 +346,9 @@ RSpec.describe Sinatra::Cookies do
       keys = []
       cookie_route('foo=bar') do
         enum = cookies.each_key
-        enum.each { |key|  keys << key }
+        enum.each { |key| keys << key }
       end
-      keys.each{ |key| expect(key).to eq('foo')}
+      keys.each { |key| expect(key).to eq('foo') }
     end
   end
 
@@ -363,7 +366,7 @@ RSpec.describe Sinatra::Cookies do
         end
       end
 
-      expect(keys.sort).to eq(['bar', 'foo'])
+      expect(keys.sort).to eq(%w[bar foo])
       expect(foo).to eq('bar')
       expect(bar).to eq('baz')
     end
@@ -387,7 +390,7 @@ RSpec.describe Sinatra::Cookies do
     it 'does not loop through deleted cookies' do
       cookie_route('foo=bar') do
         cookies.delete :foo
-        cookies.each_pair { fail }
+        cookies.each_pair { raise }
       end
     end
 
@@ -395,9 +398,9 @@ RSpec.describe Sinatra::Cookies do
       keys = []
       cookie_route('foo=bar') do
         enum = cookies.each_pair
-        enum.each { |key, value| keys << key }
+        enum.each_key { |key| keys << key }
       end
-      keys.each{ |key| expect(key).to eq('foo')}
+      keys.each { |key| expect(key).to eq('foo') }
     end
   end
 
@@ -411,7 +414,7 @@ RSpec.describe Sinatra::Cookies do
         end
       end
 
-      expect(values.sort).to eq(['bar', 'baz'])
+      expect(values.sort).to eq(%w[bar baz])
     end
 
     it 'favors response over request cookies' do
@@ -428,7 +431,7 @@ RSpec.describe Sinatra::Cookies do
     it 'does not loop through deleted cookies' do
       cookie_route('foo=bar') do
         cookies.delete :foo
-        cookies.each_value { fail }
+        cookies.each_value { raise }
       end
     end
 
@@ -502,21 +505,23 @@ RSpec.describe Sinatra::Cookies do
 
     it 'raises an exception if key does not exist' do
       error = if defined? JRUBY_VERSION
-        IndexError
-      else
-        KeyError
-      end
+                IndexError
+              else
+                KeyError
+              end
       expect { cookies.fetch('foo') }.to raise_exception(error)
     end
 
     it 'returns the block result if missing' do
-      expect(cookies.fetch('foo') { 'bar' }).to eq('bar')
+      expect(cookies.fetch('foo', 'bar')).to eq('bar')
     end
   end
 
-  describe :flatten do
-    it { expect(cookies('foo=bar').flatten).to eq({'foo' => 'bar'}.flatten) }
-  end if Hash.method_defined? :flatten
+  if Hash.method_defined? :flatten
+    describe :flatten do
+      it { expect(cookies('foo=bar').flatten).to eq({ 'foo' => 'bar' }.flatten) }
+    end
+  end
 
   describe :has_key? do
     it 'checks request cookies' do
@@ -575,8 +580,8 @@ RSpec.describe Sinatra::Cookies do
   describe :keep_if do
     it 'removes entries' do
       jar = cookies('foo=bar', 'bar=baz')
-      jar.keep_if { |*args| args == ['bar', 'baz'] }
-      expect(jar).to eq({'bar' => 'baz'})
+      jar.keep_if { |*args| args == %w[bar baz] }
+      expect(jar).to eq({ 'bar' => 'baz' })
     end
   end
 
@@ -643,17 +648,17 @@ RSpec.describe Sinatra::Cookies do
 
   describe :merge do
     it 'is mergeable with a hash' do
-      expect(cookies('foo=bar').merge(:bar => :baz)).to eq({"foo" => "bar", :bar => :baz})
+      expect(cookies('foo=bar').merge(bar: :baz)).to eq({ 'foo' => 'bar', :bar => :baz })
     end
 
     it 'does not create cookies' do
       jar = cookies('foo=bar')
-      jar.merge(:bar => 'baz')
+      jar.merge(bar: 'baz')
       expect(jar).not_to include(:bar)
     end
 
     it 'takes a block for conflict resolution' do
-      update = {'foo' => 'baz', 'bar' => 'baz'}
+      update = { 'foo' => 'baz', 'bar' => 'baz' }
       merged = cookies('foo=bar').merge(update) do |key, old, other|
         expect(key).to   eq('foo')
         expect(old).to   eq('bar')
@@ -667,18 +672,18 @@ RSpec.describe Sinatra::Cookies do
   describe :merge! do
     it 'creates cookies' do
       jar = cookies('foo=bar')
-      jar.merge! :bar => 'baz'
+      jar.merge! bar: 'baz'
       expect(jar).to include('bar')
     end
 
     it 'overrides existing values' do
       jar = cookies('foo=bar')
-      jar.merge! :foo => "baz"
-      expect(jar["foo"]).to eq("baz")
+      jar.merge! foo: 'baz'
+      expect(jar['foo']).to eq('baz')
     end
 
     it 'takes a block for conflict resolution' do
-      update = {'foo' => 'baz', 'bar' => 'baz'}
+      update = { 'foo' => 'baz', 'bar' => 'baz' }
       jar    = cookies('foo=bar')
       jar.merge!(update) do |key, old, other|
         expect(key).to   eq('foo')
@@ -690,17 +695,19 @@ RSpec.describe Sinatra::Cookies do
     end
   end
 
-  describe :rassoc do
-    it 'behaves like Hash#assoc' do
-      cookies('foo=bar').rassoc('bar') == ['foo', 'bar']
+  if Hash.method_defined? :rassoc
+    describe :rassoc do
+      it 'behaves like Hash#assoc' do
+        cookies('foo=bar').rassoc('bar') == %w[foo bar]
+      end
     end
-  end if Hash.method_defined? :rassoc
+  end
 
   describe :reject do
     it 'removes entries from new hash' do
       jar = cookies('foo=bar', 'bar=baz')
-      sub = jar.reject { |*args| args == ['bar', 'baz'] }
-      expect(sub).to eq({'foo' => 'bar'})
+      sub = jar.reject { |*args| args == %w[bar baz] }
+      expect(sub).to eq({ 'foo' => 'bar' })
       expect(jar['bar']).to eq('baz')
     end
   end
@@ -708,8 +715,8 @@ RSpec.describe Sinatra::Cookies do
   describe :reject! do
     it 'removes entries' do
       jar = cookies('foo=bar', 'bar=baz')
-      jar.reject! { |*args| args == ['bar', 'baz'] }
-      expect(jar).to eq({'foo' => 'bar'})
+      jar.reject! { |*args| args == %w[bar baz] }
+      expect(jar).to eq({ 'foo' => 'bar' })
     end
   end
 
@@ -717,7 +724,7 @@ RSpec.describe Sinatra::Cookies do
     it 'replaces entries' do
       jar = cookies('foo=bar', 'bar=baz')
       jar.replace 'foo' => 'baz', 'baz' => 'bar'
-      expect(jar).to eq({'foo' => 'baz', 'baz' => 'bar'})
+      expect(jar).to eq({ 'foo' => 'baz', 'baz' => 'bar' })
     end
   end
 
@@ -747,24 +754,26 @@ RSpec.describe Sinatra::Cookies do
   describe :select do
     it 'removes entries from new hash' do
       jar = cookies('foo=bar', 'bar=baz')
-      sub = jar.select { |*args| args != ['bar', 'baz'] }
-      expect(sub).to eq({'foo' => 'bar'}.select { true })
+      sub = jar.reject { |*args| args == %w[bar baz] }
+      expect(sub).to eq({ 'foo' => 'bar' }.select { true })
       expect(jar['bar']).to eq('baz')
     end
   end
 
-  describe :select! do
-    it 'removes entries' do
-      jar = cookies('foo=bar', 'bar=baz')
-      jar.select! { |*args| args != ['bar', 'baz'] }
-      expect(jar).to eq({'foo' => 'bar'})
+  if Hash.method_defined? :select!
+    describe :select! do
+      it 'removes entries' do
+        jar = cookies('foo=bar', 'bar=baz')
+        jar.reject! { |*args| args == %w[bar baz] }
+        expect(jar).to eq({ 'foo' => 'bar' })
+      end
     end
-  end if Hash.method_defined? :select!
+  end
 
   describe :shift do
     it 'removes from the hash' do
       jar = cookies('foo=bar')
-      expect(jar.shift).to eq(['foo', 'bar'])
+      expect(jar.shift).to eq(%w[foo bar])
       expect(jar).not_to include('bar')
     end
   end
@@ -777,18 +786,18 @@ RSpec.describe Sinatra::Cookies do
   describe :update do
     it 'creates cookies' do
       jar = cookies('foo=bar')
-      jar.update :bar => 'baz'
+      jar.update bar: 'baz'
       expect(jar).to include('bar')
     end
 
     it 'overrides existing values' do
       jar = cookies('foo=bar')
-      jar.update :foo => "baz"
-      expect(jar["foo"]).to eq("baz")
+      jar.update foo: 'baz'
+      expect(jar['foo']).to eq('baz')
     end
 
     it 'takes a block for conflict resolution' do
-      merge = {'foo' => 'baz', 'bar' => 'baz'}
+      merge = { 'foo' => 'baz', 'bar' => 'baz' }
       jar   = cookies('foo=bar')
       jar.update(merge) do |key, old, other|
         expect(key).to   eq('foo')
@@ -819,10 +828,60 @@ RSpec.describe Sinatra::Cookies do
   end
 
   describe :values do
-    it { expect(cookies('foo=bar', 'bar=baz').values.sort).to eq(['bar', 'baz']) }
+    it { expect(cookies('foo=bar', 'bar=baz').values.sort).to eq(%w[bar baz]) }
   end
 
   describe :values_at do
     it { expect(cookies('foo=bar', 'bar=baz').values_at('foo')).to eq(['bar']) }
+  end
+
+  describe :hash do
+    it 'returns an Integer' do
+      expect(cookies('foo=bar').hash).to be_a(Integer)
+    end
+  end
+
+  describe :inspect do
+    it 'includes the cookie data' do
+      expect(cookies('foo=bar').inspect).to include('foo')
+    end
+  end
+
+  describe :invert do
+    it 'inverts keys and values' do
+      expect(cookies('foo=bar').invert).to eq('bar' => 'foo')
+    end
+  end
+
+  describe :rehash do
+    it 'returns self' do
+      c = cookies('foo=bar')
+      expect(c.rehash).to equal(c)
+    end
+  end
+
+  describe :sort do
+    it 'sorts by key' do
+      result = cookies('b=2', 'a=1').sort
+      expect(result.first.first).to eq('a')
+    end
+  end
+
+  describe :to_a do
+    it 'returns an array of pairs' do
+      expect(cookies('foo=bar').to_a).to eq([%w[foo bar]])
+    end
+  end
+
+  describe :to_s do
+    it 'returns a string representation' do
+      expect(cookies('foo=bar').to_s).to be_a(String)
+    end
+  end
+
+  describe :rassoc do
+    it 'finds by value' do
+      expect(cookies('foo=bar').rassoc('bar')).to eq(%w[foo bar])
+    end
   end
 end
