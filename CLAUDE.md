@@ -2,6 +2,8 @@
 
 This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
 
+Müren is an actively maintained fork of [Sinatra](https://github.com/sinatra/sinatra), named after Zeki Müren. The gem is published as `muren` on RubyGems.
+
 ## Commands
 
 ### Setup
@@ -9,7 +11,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 bundle install
 ```
 
-> Note: `Gemfile` pins `rubocop '~> 1.32.0'` which may conflict with newer local installations. Remove the version constraint if `bundle install` fails.
+> Note: `Gemfile` pins `rubocop '~> 1.32.0'` which may conflict with newer local installations. Remove the version constraint in `Gemfile` if `bundle install` fails.
 
 ### Running tests
 ```bash
