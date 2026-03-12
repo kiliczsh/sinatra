@@ -42,6 +42,10 @@ namespace :test do
     rm_f 'coverage'
     ENV['COVERAGE'] = '1'
     Rake::Task['test'].invoke
+    Bundler.with_unbundled_env do
+      sh 'cd rack-protection && COVERAGE=1 bundle exec rspec'
+      sh 'cd sinatra-contrib && COVERAGE=1 bundle exec rspec'
+    end
   end
 end
 CLEAN.include('coverage')

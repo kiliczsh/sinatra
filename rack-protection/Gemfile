@@ -6,6 +6,7 @@ gemspec
 gem 'rake'
 gem 'rspec', '~> 3'
 gem 'rack-test'
+gem 'simplecov', require: false
 
 rack_version = ENV['rack'].to_s
 rack_version = nil if rack_version.empty? || (rack_version == 'stable')

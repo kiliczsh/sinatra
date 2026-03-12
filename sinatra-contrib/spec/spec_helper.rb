@@ -1,3 +1,12 @@
+if ENV['COVERAGE']
+  require 'simplecov'
+  SimpleCov.start do
+    command_name 'sinatra-contrib'
+    coverage_dir File.expand_path('../../coverage', __dir__)
+    add_filter '/spec/'
+  end
+end
+
 ENV['RACK_ENV'] = 'test'
 require 'sinatra/contrib'
 

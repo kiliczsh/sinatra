@@ -1,5 +1,14 @@
 # frozen_string_literal: true
 
+if ENV['COVERAGE']
+  require 'simplecov'
+  SimpleCov.start do
+    command_name 'rack-protection'
+    coverage_dir File.expand_path('../../coverage', __dir__)
+    add_filter '/spec/'
+  end
+end
+
 require 'rack/protection'
 require 'rack/test'
 require 'rack'
